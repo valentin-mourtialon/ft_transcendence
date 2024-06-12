@@ -32,4 +32,6 @@ fclean:
 	@docker system prune -a --volumes
 
 .PHONY: re
-re: fclean build
+re:
+	${MAKE} -s fclean
+	${MAKE} -s build
