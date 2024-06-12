@@ -1,35 +1,50 @@
 from django.contrib.auth import authenticate, login
+from django.http import HttpResponse
 from django.shortcuts import render
+from django.views.decorators.csrf import ensure_csrf_cookie
 from .forms import CustomUserCreationForm, LoginForm
+from .models import CustomUser
 
 # Create your views here.
 
+def devteam(request):
+	return render(request, 'devteam.html')
+
+@ensure_csrf_cookie
 def index(request):
-	form_login = LoginForm()
-	form_register = CustomUserCreationForm()
 	if request.method == 'POST':
 		if 'login' in request.POST:
-			form_login = LoginForm(request.POST)
-			if form_login.is_valid():
-				username_or_email = form_login.cleaned_data['username_or_email']
-				password = form_login.cleaned_data['password']
-				user = authenticate(request, username=username_or_email, password=password)
-				if user is not None:
-					login(request, user)
-					return redirect('home')  # Redirect to home or any other page after login
-				else:
-					form_login.add_error(None, 'Invalid username or password')
-		elif 'register' in request.POST:
-			form_register = CustomUserCreationForm(request.POST)
-			if form_register.is_valid():
-				form_register.save()
-				return redirect('login')  # Redirect to login page after registration
+			email = request.POST.get('username')
+			password = request.POST.get('password')
+			try:
+				# Try to find the user by username first
+				user = CustomUser.objects.get(username=email)
+			except CustomUser.DoesNotExist:
+				# If not found by username, try to find by email
+				try:
+					user = CustomUser.objects.get(email=email)
+				except CustomUser.DoesNotExist:
+					user = None
+
+			if user is not None and user.check_password(password):
+				# auth_login(request, user)
+				return HttpResponse("User authenticated.")
 			else:
-				form_register.add_error(None, 'Invalid username or password')
+				# Handle invalid login here
+				return HttpResponse("Failed to login.")
 
-	context = {
-		'form_login': form_login,
-		'form_register': form_register,
-	}
+		elif 'register' in request.POST:
+			username = request.POST.get('username')
+			email = request.POST.get('email')
+			password = request.POST.get('password')
+			try:
+				user = CustomUser.objects.create_user(username=username, email=email, password=password)
+				user.save()
+				# Log the user in after registration
+				# auth_login(request, user)
+				return HttpResponse("User created.")
+			except Exception as e:
+				# Handle registration error (e.g., user already exists)
+				return HttpResponse("Failed to register.")
 
-	return render(request, 'index.html', context)
+	return render(request, 'index.html')

@@ -41,6 +41,64 @@ Modify html files with:
 </form>
 ```
 
+Where `csrf_token` is used, add property `@ensure_csrf_cookie` to corresponding methods:
+
+```
+@ensure_csrf_cookie
+def viewMethod(request);
+    pass
+```
+
+For multiple forms in the same page:
+
+```
+<form>
+    {% csrf_token %}
+    [...]
+    <button name="form1" type="submit">
+</form>
+<form>
+    {% csrf_token %}
+    [...]
+    <button name="form2" type="submit">
+</form>
+```
+
+```
+@ensure_csrf_cookie
+def viewMethod(request);
+    if request.method == 'POST':
+        if 'form1' in request.POST:
+            # Handle request here
+            pass
+        elif 'form2' in request.POST:
+            # Handle request here
+            pass
+```
+
+# Debugging
+
+Add in the HTML file:
+
+```
+{% if debug_message %}
+<script>
+    console.log("{{ debug_message }}");
+</script>
+{% endif %}
+```
+
+Add in the view:
+
+```
+def viewMethod(request):
+    context = {}
+    [...]
+    context['debug_message'] = "Debug message"
+    [...]
+    return render(request, 'index.html', context)
+```
+
 # Database connection
 
 Modify `DATABASES` variable in `projectName/settings.py`:
