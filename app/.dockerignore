@@ -1,0 +1,11 @@
+.env
+
+.dockerignore
+Dockerfile
+docker-compose.yml
+
+Makefile
+
+README.md
+
+__pycache__/

@@ -1,0 +1,32 @@
+networks:
+  backend:
+    name: backend
+
+services:
+  django:
+    build: ./app
+    container_name: django
+    depends_on:
+      - db
+    env_file: .env
+    networks:
+      - backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./app:/app
+
+  db:
+    build: ./database
+    container_name: db
+    env_file: .env
+    networks:
+      - backend
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+
+volumes:
+  pg-data:
+    name: pg-data
