@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="{% static 'reset.css' %}">
+	<link rel="stylesheet" href="{% static 'style.css' %}">
+	<title>Transcendence</title>
+</head>
+
+<body>
+	<div class="content-wrapper">
+		<form id="login-form">
+			<input type="text" name="username-field" id="username-field" placeholder="Username">
+			<input type="password" name="password-field" id="password-field" placeholder="Password">
+			<button type="submit" id="login-submit-button">Login</button>
+		</form>
+	</div>
+	<script>
+		// username: sophiab
+		// email: sophia.brown@x.dummyjson.com
+		// password: sophiabpass
+		async function fetchAuthCredentials(username, password) {
+			const res = await fetch('https://dummyjson.com/auth/login', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					username: username,
+					password: password
+				})
+			});
+			if (res.ok) return res.json();
+			throw new Error("Authentication failed");
+		}
+
+		async function authUser(event) {
+			event.preventDefault(); // Empêche le rechargement de la page
+			const username = document.getElementById('username-field').value;
+			const password = document.getElementById('password-field').value;
+
+			try {
+				const creds = await fetchAuthCredentials(username, password);
+				console.log(creds);
+				// Do smthing with auth creds (redirect)
+			} catch (error) {
+				console.error(error.message);
+				// Display infos for user to understand
+			}
+		}
+
+		document.getElementById('login-form').addEventListener('submit', authUser);
+	</script>
+</body>
+
+</html>

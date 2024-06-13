@@ -1,27 +1,27 @@
 networks:
-  backend:
-    name: backend
+  trans:
+    name: trans
 
 services:
   django:
-    build: ./app
+    build: ./backend
     container_name: django
     depends_on:
       - db
     env_file: .env
     networks:
-      - backend
+      - trans
     ports:
       - "8000:8000"
     volumes:
-      - ./app:/app
+      - ./backend:/backend
 
   db:
     build: ./database
     container_name: db
     env_file: .env
     networks:
-      - backend
+      - trans
     ports:
       - "5432:5432"
     volumes:
