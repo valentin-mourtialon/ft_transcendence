@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
-    "pong.authn.apps.AuthnConfig",
+    "authn.apps.AuthnConfig",
 ]
 
 MIDDLEWARE = [
@@ -90,7 +90,7 @@ DATABASES = {
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
-AUTH_USER_MODEL = "pong.authn.CustomUser"
+AUTH_USER_MODEL = "authn.CustomUser"
 
 AUTH_PASSWORD_VALIDATORS = [
     {
