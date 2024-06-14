@@ -1,5 +1,6 @@
 body {
 	font-family: Arial, Helvetica, sans-serif;
+	font-size: 18px;
 	background-color: rgb(39, 39, 39);
 }
 
@@ -12,10 +13,14 @@ body {
 	height: 80vh;
 }
 
-#login-form {
+form {
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
 	background-color: aqua;
+}
+
+.form--hidden {
+	display: none;
 }
