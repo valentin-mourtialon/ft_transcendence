@@ -7,7 +7,8 @@ services:
     build: ./app
     container_name: django
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     env_file: .env
     networks:
       - backend
@@ -15,6 +16,25 @@ services:
       - "8000:8000"
     volumes:
       - ./app:/app
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000"]
+      interval: 5s
+      timeout: 5s
+      retries: 4
+
+  prometheus:
+    build: ./prometheus
+    container_name: prometheus
+    depends_on:
+      django:
+        condition: service_healthy
+    networks:
+      - backend
+    # volumes:
+    #   - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      # - prom-data:/var/lib/prometheus
+    ports:
+      - "9090:9090"
 
   db:
     build: ./database
@@ -26,7 +46,28 @@ services:
       - "5432:5432"
     volumes:
       - pg-data:/var/lib/postgresql/data
+    healthcheck:
+      test: pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}
+      interval: 5s
+      timeout: 5s
+      retries: 4
+
+  # prometheus_db:
+  #   build: ./database
+  #   container_name: prometheus_db
+  #   depends_on:
+  #     - prometheus
+  #   env_file: .env
+  #   networks:
+  #     - backend
+  #   ports:
+  #     - "5433:5432"
+  #   volumes:
+  #     - prom-data:/var/lib/prometheus/data
+    
 
 volumes:
   pg-data:
     name: pg-data
+  # prom-data:
+  #   name: prom-data

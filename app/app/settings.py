@@ -38,9 +38,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'authn.apps.AuthnConfig',
+    'django_prometheus',
 ]
 
 MIDDLEWARE = [
+    'django_prometheus.middleware.PrometheusBeforeMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -48,7 +50,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_prometheus.middleware.PrometheusAfterMiddleware',
 ]
+
+# DATABASE_ROUTERS = ['app.db_router.MyDBRouter']
 
 ROOT_URLCONF = 'app.urls'
 
@@ -76,11 +81,19 @@ WSGI_APPLICATION = 'app.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django_prometheus.db.backends.postgresql',
         'NAME': os.getenv('POSTGRES_DB'),
         'USER': os.getenv('POSTGRES_USER'),
         'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
         'HOST': 'db',
+        'PORT': '5432',
+    },
+    'prometheus': {
+        'ENGINE': 'django_prometheus.db.backends.postgresql',
+        'NAME': os.getenv('PROMETHEUS_DB'),
+        'USER': os.getenv('PROMETEHUS_USER'),
+        'PASSWORD': os.getenv('PROMETHEUS_PASSWORD'),
+        'HOST': 'prometheus_db',
         'PORT': '5432',
     }
 }

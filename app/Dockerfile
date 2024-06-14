@@ -6,6 +6,7 @@ WORKDIR /app
 COPY ./Pipfile /app/
 COPY ./Pipfile.lock /app/
 RUN pip install --upgrade pip && \
+    pip install django-prometheus &&\
     pip install pipenv && \
     pipenv install --deploy --system
 
