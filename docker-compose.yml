@@ -1,31 +1,37 @@
 networks:
-  backend:
-    name: backend
+  trans:
+    name: trans
 
 services:
   django:
-    build: ./app
+    build: ./backend
     container_name: django
-    depends_on:
-      - db
     env_file: .env
     networks:
-      - backend
+      - trans
     ports:
       - "8000:8000"
     volumes:
-      - ./app:/app
+      - ./backend:/backend
+    depends_on:
+      db:
+        condition: service_healthy
 
   db:
     build: ./database
     container_name: db
     env_file: .env
     networks:
-      - backend
+      - trans
     ports:
       - "5432:5432"
     volumes:
       - pg-data:/var/lib/postgresql/data
+    healthcheck:
+      test: pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}
+      interval: 5s
+      timeout: 5s
+      retries: 4
 
 volumes:
   pg-data:

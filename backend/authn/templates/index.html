@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="{% static 'reset.css' %}">
+	<link rel="stylesheet" href="{% static 'style.css' %}">
+	<title>Transcendence</title>
+</head>
+
+<body>
+	<div class="content-wrapper">
+		<form id="login">
+			<h1 class="login-form__title">Login</h1>
+			<input type="text" class="form__field" name="username-field" id="loginUsernameField"
+				placeholder="Username or Email">
+			<input type="password" class="form__field" name="password-field" id="loginPasswordField"
+				placeholder="Password">
+			<button type="submit" class="form__button">Login</button>
+			<p class="form__text">
+				<a href="#" class="form__link">Forgot your password?</a>
+			</p>
+			<p class="form__text">
+				<a href="./" class="form__link" id="linkCreateAccount">Don't have an account? Create account</a>
+			</p>
+		</form>
+
+		<form class="form" id="createAccount">
+			<h1 class="register-form__title">Create account</h1>
+			<input type="text" class="form__field" name="username-field" id="registerUsernameField"
+				placeholder="Username">
+			<input type="email" class="form__field" name="email-field" id="registerEmailField" placeholder="Email">
+			<input type="password" class="form__field" name="password-field" id="registerPasswordField"
+				placeholder="Password">
+			<button type="submit" class="form__button">Create account</button>
+			<p class="form__text">
+				<a href="./" class="form__link" id="linkLogin">Already have an account</a>
+			</p>
+		</form>
+	</div>
+	<script src="{% static 'main.js' %}" type="module"></script>
+</body>
+
+</html>
