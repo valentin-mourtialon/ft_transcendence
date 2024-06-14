@@ -1,7 +1,9 @@
 COMPOSE_FILE 	:= ./docker-compose.yml
 
 .PHONY: all
-all:	build
+all:
+	${MAKE} -s build
+	${MAKE} -s up
 
 .PHONY: build
 build:
@@ -23,15 +25,21 @@ ps:
 logs:
 	@docker compose -f $(COMPOSE_FILE) logs -f -t -n 100
 
-.PHONY: clean
-clean:
-	@docker system prune -f
+.PHONY: restart
+restart:
+	${MAKE} -s down
+	${MAKE} -s build
+	${MAKE} -s up
 
 .PHONY: fclean
-fclean:
-	@docker system prune -a --volumes
+fclean: down
+	docker system prune -f -a --volumes
+	# Check if 'pg-data' exists
+	@if docker volume ls | grep -q 'pg-data'; then \
+		docker volume rm pg-data; \
+	fi
 
 .PHONY: re
-re:
+re: fclean
 	${MAKE} -s fclean
-	${MAKE} -s build
+	${MAKE} -s all
