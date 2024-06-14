@@ -6,8 +6,6 @@ services:
   django:
     build: ./backend
     container_name: django
-    depends_on:
-      - db
     env_file: .env
     networks:
       - trans
@@ -15,6 +13,9 @@ services:
       - "8000:8000"
     volumes:
       - ./backend:/backend
+    depends_on:
+      db:
+        condition: service_healthy
 
   db:
     build: ./database
@@ -26,6 +27,11 @@ services:
       - "5432:5432"
     volumes:
       - pg-data:/var/lib/postgresql/data
+    healthcheck:
+      test: pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}
+      interval: 5s
+      timeout: 5s
+      retries: 4
 
 volumes:
   pg-data:
