@@ -17,7 +17,7 @@ services:
     volumes:
       - ./app:/app
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000"]
+      test: ["CMD", "curl", "-f", "localhost:8000"]
       interval: 5s
       timeout: 5s
       retries: 4
