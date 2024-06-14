@@ -23,11 +23,11 @@
 		// email: sophia.brown@x.dummyjson.com
 		// password: sophiabpass
 		async function fetchAuthCredentials(username, password) {
-			const res = await fetch('https://dummyjson.com/auth/login', {
+			const res = await fetch('/api/login', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
-					username: username,
+					username_or_email: username,
 					password: password
 				})
 			});
