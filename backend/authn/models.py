@@ -1,4 +1,3 @@
-from django.apps import apps
 from django.contrib.auth.models import (
     AbstractBaseUser,
     BaseUserManager,
@@ -19,8 +18,6 @@ class CustomUserManager(BaseUserManager):
             raise ValueError("The given username must be set")
         if not email:
             raise ValueError("The given email must be set")
-        GlobalUserModel = apps.get_model(self.model._meta.app_label, self.model._meta.object_name)
-        username = GlobalUserModel.normalize_username(username)
         email = self.normalize_email(email)
         user = self.model(username=username, email=email, **extra_fields)
         user.set_password(password)
@@ -43,13 +40,11 @@ class CustomUserManager(BaseUserManager):
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
-    id = models.UUIDField(_("id"), primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.UUIDField(_("id"), primary_key=True, unique=True, default=uuid.uuid4, editable=False)
     username = models.CharField(_("username"), max_length=150, unique=True)
     email = models.EmailField(_("email address"), unique=True)
-    # password = models.CharField(_("password"), max_length=128) # Inherited from AbstractBaseUser
 
-    date_joined = models.DateTimeField(_("date joined"), default=timezone.now)
-    # last_login = models.DateTimeField(_("last login"), blank=True, null=True) # Inherited from AbstractBaseUser
+    date_joined = models.DateTimeField(_("date joined"), default=timezone.now, editable=False)
 
     is_active = models.BooleanField(_("active"), default=True)
     is_staff = models.BooleanField(_("staff status"), default=False)
